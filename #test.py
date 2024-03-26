@@ -9,7 +9,7 @@ import csv
 import json
 
 root = tk.Tk()
-root.title("BE Precision Technology - Probe Card Tester")
+root.title("Batenburg Beenen LEGO builder")
 root.geometry(f"{1920}x{1080}")  # Set the initial window size to 1920x1080 pixels
 root.configure(bg="white")
 
