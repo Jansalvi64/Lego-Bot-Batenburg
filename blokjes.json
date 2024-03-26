@@ -1,0 +1,12 @@
+{
+    "2x4 legoblokje": {
+      "lengte": 4,
+      "breedte": 2,
+      "hoogte": 1
+    },
+    "1x1 legoblokje": {
+      "lengte": 1,
+      "breedte": 1,
+      "hoogte": 1
+    }
+  }
