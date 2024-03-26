@@ -13,15 +13,15 @@ def toon_lego_blokjes(blokjes):
     x_offset = 10
     y_offset = 10
     for naam, blokje in blokjes.items():
-        lengte = blokje.get("lengte", 0)
-        breedte = blokje.get("breedte", 0)
+        lengte = blokje.get("breedte", 0)
+        breedte = blokje.get("lengte", 0)
         hoogte = blokje.get("hoogte", 0)
         canvas.create_rectangle(x_offset, y_offset, x_offset + lengte * 20, y_offset + breedte * 20, fill="yellow")  # Tekenen van het LEGO-blokje
         canvas.create_text(x_offset + lengte * 10, y_offset + breedte * 10, text=naam)  # Weergeven van de naam van het blokje
         x_offset += (lengte * 20) + 20
-        if x_offset > 500:  # Nieuwe regel beginnen als het canvas vol raakt
+        if x_offset > 80:  # Nieuwe regel beginnen als het canvas vol raakt. waarde is de breedte van canvas
             x_offset = 10
-            y_offset += 50
+            y_offset += (lengte * 50)+20
 
 def laad_json_bestand():
     bestandsnaam = filedialog.askopenfilename(filetypes=[("JSON files", "*.json")])
