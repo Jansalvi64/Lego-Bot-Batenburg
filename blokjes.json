@@ -1,42 +1,47 @@
 {
     "2x2": {
-      "lengte": 2,
-      "breedte": 2,
-      "hoogte": 1
+        "lengte": 2,
+        "breedte": 2,
+        "hoogte": 1
     },
     "1x2": {
-      "lengte": 2,
-      "breedte": 1,
-      "hoogte": 1
+        "lengte": 2,
+        "breedte": 1,
+        "hoogte": 1
     },
     "2x3": {
-      "lengte": 3,
-      "breedte": 2,
-      "hoogte": 1
+        "lengte": 3,
+        "breedte": 2,
+        "hoogte": 1
     },
     "1x3": {
-      "lengte": 3,
-      "breedte": 1,
-      "hoogte": 1
+        "lengte": 3,
+        "breedte": 1,
+        "hoogte": 1
     },
     "2x4": {
-      "lengte": 4,
-      "breedte": 2,
-      "hoogte": 1
+        "lengte": 4,
+        "breedte": 2,
+        "hoogte": 1
     },
     "1x4": {
-      "lengte": 4,
-      "breedte": 1,
-      "hoogte": 1
+        "lengte": 4,
+        "breedte": 1,
+        "hoogte": 1
     },
     "2x6": {
-      "lengte": 6,
-      "breedte": 2,
-      "hoogte": 1
+        "lengte": 6,
+        "breedte": 2,
+        "hoogte": 1
     },
     "1x6": {
-      "lengte": 6,
-      "breedte": 1,
-      "hoogte": 1
+        "lengte": 6,
+        "breedte": 1,
+        "hoogte": 1
+    },
+    "1x1": {
+        "lengte": 1,
+        "breedte": 1,
+        "hoogte": 1
     }
-  }
+}
