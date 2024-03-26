@@ -16,8 +16,8 @@ def toon_lego_blokjes(blokjes):
     nop_afstand = 20  # Afstand tussen nopjes
     nop_diameter = 10  # Diameter van de nopjes
     for naam, blokje in blokjes.items():
-        lengte = blokje.get("lengte", 0)
-        breedte = blokje.get("breedte", 0)
+        lengte = blokje.get("breedte", 0)
+        breedte = blokje.get("lengte", 0)
         hoogte = blokje.get("hoogte", 0)
         canvas.create_text(x_offset + lengte * nop_afstand / 2, y_offset - 10, text=naam)  # Weergeven van de naam van het blokje boven het blokje
         canvas.create_rectangle(x_offset, y_offset, x_offset + lengte * nop_afstand, y_offset + breedte * nop_afstand, fill="yellow")  # Tekenen van het LEGO-blokje
