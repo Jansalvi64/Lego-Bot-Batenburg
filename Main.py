@@ -9,7 +9,7 @@ import csv
 import json
 
 
-def toon_lego_blokjes(blokjes):
+def toon_lego_blokjes(blokjes, kleur):
     canvas.delete("all")  # Wis het canvas
     x_offset = 20
     y_offset = 30
@@ -22,7 +22,7 @@ def toon_lego_blokjes(blokjes):
         hoogte = blokje.get("hoogte", 0)
         max_breedte = max(max_breedte, breedte)
         canvas.create_text(x_offset + lengte * nop_afstand / 2, y_offset - 10, text=naam)  # Weergeven van de naam van het blokje boven het blokje
-        canvas.create_rectangle(x_offset, y_offset, x_offset + lengte * nop_afstand, y_offset + breedte * nop_afstand, fill="yellow")  # Tekenen van het LEGO-blokje
+        canvas.create_rectangle(x_offset, y_offset, x_offset + lengte * nop_afstand, y_offset + breedte * nop_afstand, fill=kleur)  # Tekenen van het LEGO-blokje
         for x in range(lengte):
             for y in range(breedte):
                 nop_x = x_offset + x * nop_afstand + nop_afstand / 2
@@ -35,11 +35,11 @@ def toon_lego_blokjes(blokjes):
             y_offset += max_breedte * nop_afstand + 30  # Extra ruimte tussen de regels
             max_breedte = 0  # Reset de maximale breedte voor de volgende regel
 
-def laad_json_bestand(bestandsnaam):
+def laad_json_bestand(bestandsnaam, kleur="Yellow"):
     with open(bestandsnaam, 'r') as f:
         try:
             data = json.load(f)
-            toon_lego_blokjes(data)
+            toon_lego_blokjes(data, kleur)
         except json.JSONDecodeError:
             messagebox.showerror("Fout", "Ongeldig JSON-formaat")
 
@@ -73,9 +73,17 @@ def verwijder_blokje(naam):
     except (json.JSONDecodeError, ValueError):
         messagebox.showerror("Fout", "Er is een fout opgetreden bij het verwijderen van het blokje!")
 
+def verander_kleur(event):
+    kleur = kleuren_keuze.get()
+    messagebox.showinfo("Kleur gewijzigd", f"Kleur van de blokjes is nu {kleur}")
+    laad_json_bestand("blokjes.json", kleur)
+
 
 root = tk.Tk()
 root.title("LEGO Blokje Viewer")
+
+# Maximaliseer het venster
+root.state("zoomed")
 
 left_frame = ttk.Frame(root)
 left_frame.pack(padx=10, pady=10, side ="left")
@@ -86,7 +94,7 @@ bediening_frame.pack(padx=10, pady=10)
 blokjes_frame = Frame(left_frame, bg="white")
 blokjes_frame.pack(padx=10, pady=10)
 
-canvas = tk.Canvas(blokjes_frame, width=200, height=800, bg="white")
+canvas = tk.Canvas(blokjes_frame, width=200, height=650, bg="white")
 canvas.pack(side="left", fill="both", expand=True)
 
 scrollbar = ttk.Scrollbar(blokjes_frame, orient="vertical", command=canvas.yview)
@@ -120,6 +128,13 @@ toevoegen_knop.grid(row=4, columnspan=2, padx=5, pady=5)
 
 verwijderen_knop = ttk.Button(bediening_frame, text="Verwijder blokje", command=lambda: verwijder_blokje(naam_entry.get()))
 verwijderen_knop.grid(row=5, columnspan=2, padx=5, pady=5)
+
+kleuren = ["Red", "Green", "Blue", "Yellow", "Orange"]  # Lijst met vooraf ingestelde kleuren
+
+kleuren_keuze = ttk.Combobox(left_frame, values=kleuren)
+kleuren_keuze.pack(padx=10, pady=10)
+kleuren_keuze.bind("<<ComboboxSelected>>", verander_kleur)
+kleuren_keuze.set("Yellow")
 
 laad_json_bestand("blokjes.json")
 
