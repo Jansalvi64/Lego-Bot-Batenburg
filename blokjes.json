@@ -43,5 +43,10 @@
         "lengte": 1,
         "breedte": 1,
         "hoogte": 1
+    },
+    "1x10": {
+        "lengte": 10,
+        "breedte": 1,
+        "hoogte": 1
     }
 }
