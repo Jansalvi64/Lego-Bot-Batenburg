@@ -8,25 +8,26 @@ from tkinter import messagebox
 import csv
 import json
 
+
 def toon_lego_blokjes(blokjes, kleur):
-    canvas_blokjes.delete("all")  # Wis het canvas
+    canvas.delete("all")  # Wis het canvas
     x_offset = 20
     y_offset = 30
-    nop_afstand = 20  # Afstand tussen noppen
-    nop_diameter = 10  # Diameter van de noppen
+    nop_afstand = 20  # Afstand tussen nopjes
+    nop_diameter = 10  # Diameter van de nopjes
     max_breedte = 0
     for naam, blokje in blokjes.items():
         lengte = blokje.get("breedte", 0)
         breedte = blokje.get("lengte", 0)
         hoogte = blokje.get("hoogte", 0)
         max_breedte = max(max_breedte, breedte)
-        canvas_blokjes.create_text(x_offset + lengte * nop_afstand / 2, y_offset - 10, text=naam)  # Weergeven van de naam van het blokje boven het blokje
-        canvas_blokjes.create_rectangle(x_offset, y_offset, x_offset + lengte * nop_afstand, y_offset + breedte * nop_afstand, fill=kleur)  # Tekenen van het LEGO-blokje
+        canvas.create_text(x_offset + lengte * nop_afstand / 2, y_offset - 10, text=naam)  # Weergeven van de naam van het blokje boven het blokje
+        canvas.create_rectangle(x_offset, y_offset, x_offset + lengte * nop_afstand, y_offset + breedte * nop_afstand, fill=kleur)  # Tekenen van het LEGO-blokje
         for x in range(lengte):
             for y in range(breedte):
                 nop_x = x_offset + x * nop_afstand + nop_afstand / 2
                 nop_y = y_offset + y * nop_afstand + nop_afstand / 2
-                canvas_blokjes.create_oval(nop_x - nop_diameter / 2, nop_y - nop_diameter / 2, nop_x + nop_diameter / 2, nop_y + nop_diameter / 2, fill="black", outline="black")  # Zwart cirkel voor een nopje
+                canvas.create_oval(nop_x - nop_diameter / 2, nop_y - nop_diameter / 2, nop_x + nop_diameter / 2, nop_y + nop_diameter / 2, fill="black", outline="black")  # Zwart cirkel voor een nopje
         
         x_offset += (lengte * nop_afstand) + 40  # Extra ruimte tussen de blokjes
         if x_offset > 80:  # Nieuwe regel beginnen als het canvas vol raakt
@@ -97,34 +98,64 @@ def create_bouwplaat(canvas):
             nop_y = y * nop_afstand + y_offset + nop_afstand / 2
             canvas.create_oval(nop_x - nop_diameter / 2, nop_y - nop_diameter / 2, nop_x + nop_diameter / 2, nop_y + nop_diameter / 2, fill="black")
 
+def start_blokje_draggen(event):
+    # Bepaal de grootte van het blokje op basis van het geselecteerde blokje in het canvas
+    items = canvas.find_closest(event.x, event.y)
+    x1, y1, x2, y2 = canvas.coords(items[0])
+    lengte = (x2 - x1) // 20
+    breedte = (y2 - y1) // 20
+    
+    # Maak een nieuw blokje dat overeenkomt met het geselecteerde blokje
+    geselecteerde_blokje = kleuren_keuze.get()
+    blokje_aan_muis = canvas.create_rectangle(event.x, event.y, event.x + lengte * 20, event.y + breedte * 20, fill=geselecteerde_blokje)
+
+    # Teken de nopjes op het blokje aan de muis
+    blokje_nopjes = []
+    for x in range(int(lengte)):
+        for y in range(int(breedte)):
+            nop_x = event.x + x * 20 + 20 / 2
+            nop_y = event.y + y * 20 + 20 / 2
+            nop_id = canvas.create_oval(nop_x - 5, nop_y - 5, nop_x + 5, nop_y + 5, fill="black")
+            blokje_nopjes.append(nop_id)
+
+    # Bind het nieuwe blokje aan de muispositie
+    canvas.bind("<B1-Motion>", lambda event, blokje=blokje_aan_muis, lengte=lengte, breedte=breedte, nopjes=blokje_nopjes: beweeg_blokje_aan_muis(event, blokje, lengte, breedte, nopjes))
+
+def beweeg_blokje_aan_muis(event, blokje, lengte, breedte, nopjes):
+    # Update de positie van het blokje om het aan de muis te laten kleven
+    canvas.coords(blokje, event.x, event.y, event.x + lengte * 20, event.y + breedte * 20)
+
+    # Update de positie van de nopjes op het blokje aan de muis
+    for i in range(len(nopjes)):
+        x = i // breedte
+        y = i % breedte
+        nop_x = event.x + x * 20 + 20 / 2
+        nop_y = event.y + y * 20 + 20 / 2
+        canvas.coords(nopjes[i], nop_x - 5, nop_y - 5, nop_x + 5, nop_y + 5)
+
+
 root = tk.Tk()
 root.title("LEGO Blokje Viewer")
 
 # Maximaliseer het venster
 root.state("zoomed")
 
-main_frame = ttk.Frame(root)
-main_frame.pack(padx=10, side="left")
+left_frame = ttk.Frame(root)
+left_frame.pack(padx=10, pady=10, side ="left")
 
-bediening_frame = ttk.Frame(main_frame)
-bediening_frame.pack(padx=10, pady=10, side="left")
+bediening_frame = ttk.Frame(left_frame)
+bediening_frame.pack(padx=10, pady=10)
 
-blokjes_frame = Frame(main_frame, bg="white", height=5000, width=5000)
-blokjes_frame.pack(padx=10, pady=10, side="left")
+blokjes_frame = Frame(left_frame, bg="white")
+blokjes_frame.pack(padx=10, pady=10)
 
-canvas_blokjes = tk.Canvas(blokjes_frame, width=200, height=800, bg="white")
+canvas = tk.Canvas(blokjes_frame, width=200, height=650, bg="white")
+canvas.pack(side="left", fill="both", expand=True)
 
-bouwplaat_canvas = tk.Canvas(blokjes_frame, width=960, height=960, bg="white", borderwidth=2, relief="solid")
-bouwplaat_canvas.pack(padx=20, pady=10, side="right")
+scrollbar = ttk.Scrollbar(blokjes_frame, orient="vertical", command=canvas.yview)
+scrollbar.pack(side="right", fill="y")
 
-# Teken de bouwplaat met noppen
-create_bouwplaat(bouwplaat_canvas)
-
-scrollbar = ttk.Scrollbar(blokjes_frame, orient="vertical", command=canvas_blokjes.yview)
-scrollbar.pack(side="left", fill="y")
-canvas_blokjes.pack(side="left", fill="both", expand=True)
-
-canvas_blokjes.configure(yscrollcommand=scrollbar.set)
+canvas.configure(yscrollcommand=scrollbar.set)
 
 # Voeg invoervelden toe voor het toevoegen van een nieuw blokje
 naam_label = ttk.Label(bediening_frame, text="Naam:")
@@ -155,16 +186,20 @@ verwijderen_knop.grid(row=5, columnspan=2, padx=5, pady=5)
 
 kleuren = ["Red", "Green", "Blue", "Yellow", "Orange"]  # Lijst met vooraf ingestelde kleuren
 
-kleuren_keuze = ttk.Combobox(bediening_frame, values=kleuren, state="readonly")
-kleuren_keuze.grid(row=6, columnspan=2, padx=5, pady=5)
+kleuren_keuze = ttk.Combobox(left_frame, values=kleuren, state="readonly")
+kleuren_keuze.pack(padx=10, pady=10)
 kleuren_keuze.bind("<<ComboboxSelected>>", verander_kleur)
 kleuren_keuze.set("Yellow")
 
+bouwplaat_canvas = tk.Canvas(root, width=960, height=960, bg="white", borderwidth=2, relief="solid")
+bouwplaat_canvas.pack(padx=20, pady=20)
+
+# Voeg een binding toe aan het canvas om het slepen van een blokje te starten wanneer erop wordt geklikt in het keuzemenu
+canvas.bind("<Button-1>", start_blokje_draggen)
+
+# Teken de bouwplaat met noppen
+create_bouwplaat(bouwplaat_canvas)
+
 laad_json_bestand("blokjes.json")
-
-# Variabele om bij te houden welk item wordt gesleept
-dragged_item = None
-
-canvas_blokjes.bind('<Button-1>', on_click)
 
 root.mainloop()
