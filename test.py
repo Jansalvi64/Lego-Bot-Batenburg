@@ -100,7 +100,7 @@ def create_bouwplaat(canvas):
 
 def start_blokje_draggen(event):
     # Bepaal de grootte van het blokje op basis van het geselecteerde blokje in het canvas
-    items = canvas_blokjes.find_closest(event.x, event.y)
+    items = canvas_blokjes.find_overlapping(event.x, event.y, event.x, event.y)
     x1, y1, x2, y2 = canvas_blokjes.coords(items[0])
     lengte = (x2 - x1) // 20
     breedte = (y2 - y1) // 20
