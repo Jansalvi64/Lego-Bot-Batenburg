@@ -48,5 +48,10 @@
         "lengte": 10,
         "breedte": 1,
         "hoogte": 1
+    },
+    "hsagka": {
+        "lengte": 1,
+        "breedte": 50,
+        "hoogte": 1
     }
 }
