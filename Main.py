@@ -162,9 +162,4 @@ kleuren_keuze.set("Yellow")
 
 laad_json_bestand("blokjes.json")
 
-# Variabele om bij te houden welk item wordt gesleept
-dragged_item = None
-
-canvas_blokjes.bind('<Button-1>', on_click)
-
 root.mainloop()
